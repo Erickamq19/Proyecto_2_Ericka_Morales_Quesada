@@ -16,6 +16,11 @@ namespace Proyecto_2_API.Modelos
         [Required]
         [StringLength(255)]
         public string ContrasenaHash { get; set; }
-
+        [Required]
+        public int IdRol { get; set; }
+        [Required]
+        public DateTime FechaRegistro { get; set; }
+        [Required]
+        public bool Activo {  get; set; }
     }
 }

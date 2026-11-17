@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Info_API\" />
     <Folder Include="Logica_negocio\" />
     <Folder Include="Interfaces\" />
