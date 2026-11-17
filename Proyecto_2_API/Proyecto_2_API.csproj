@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Modelos\" />
     <Folder Include="Info_API\" />
     <Folder Include="Logica_negocio\" />
     <Folder Include="Interfaces\" />

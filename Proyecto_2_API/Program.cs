@@ -1,3 +1,6 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Proyecto_2_API.DB;
 
 namespace Proyecto_2_API
 {
@@ -10,6 +13,7 @@ namespace Proyecto_2_API
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<conexion_DB>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion_DB2")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
