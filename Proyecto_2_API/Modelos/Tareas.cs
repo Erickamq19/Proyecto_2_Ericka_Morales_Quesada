@@ -9,10 +9,10 @@ namespace Proyecto_2_API.Modelos
         public int Id { get; set; }
         [Required]
         [StringLength(150)]
-        public string Titulo { get; set; }
+        public string Titulo { get; set; } = string.Empty;  
         [Required]
         [StringLength(500)]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
         [Required]
         public int IdProyecto { get; set; }
         [Required]
@@ -25,8 +25,8 @@ namespace Proyecto_2_API.Modelos
         public int IdPrioridad { get; set; }
         [Required]
         public DateTime FechaCreacion { get;  set; }
-        public DateTime FechaActualizacion { get; set; }
+        public DateTime? FechaActualizacion { get; set; }
         public DateTime FechaLimite { get; set; }
-        public DateTime FechaCompletada { get; set; }
+        public DateTime? FechaCompletada { get; set; }
     }
 }

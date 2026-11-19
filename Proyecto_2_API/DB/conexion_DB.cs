@@ -40,15 +40,17 @@ namespace Proyecto_2_API.DB
             //Valores de cada tabla
             //Usuarios
             modelBuilder.Entity<Usuarios>().Property(f => f.IdRol).HasDefaultValue(2);
-            modelBuilder.Entity<Usuarios>().Property(m => m.FechaRegistro).HasDefaultValueSql("SYDATETIME()");
+            modelBuilder.Entity<Usuarios>().Property(m => m.FechaRegistro).HasDefaultValueSql("SYSDATETIME()");
             modelBuilder.Entity<Usuarios>().Property(z => z.Activo).HasDefaultValue(true);
             //Proyectos
-            modelBuilder.Entity<Proyectos>().Property(c => c.FechaCreacion).HasDefaultValueSql("SYDATETIME()");
+            modelBuilder.Entity<Proyectos>().Property(c => c.FechaCreacion).HasDefaultValueSql("SYSDATETIME()");
             modelBuilder.Entity<Proyectos>().Property(v => v.Activo).HasDefaultValue(true);
+            modelBuilder.Entity<Proyectos>().HasOne<Usuarios>().WithMany().HasForeignKey(s => s.IdResponsable).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Proyectos>().HasOne<Estados>().WithMany().HasForeignKey(g => g.IdEstado).OnDelete(DeleteBehavior.Restrict);
             //Tareas
             modelBuilder.Entity<Tareas>().Property(k => k.IdEstado).HasDefaultValue(1);
             modelBuilder.Entity<Tareas>().Property(b => b.IdPrioridad).HasDefaultValue(2);
-            modelBuilder.Entity<Tareas>().Property(x => x.FechaCreacion).HasDefaultValueSql("SYDATETIME()"); 
+            modelBuilder.Entity<Tareas>().Property(x => x.FechaCreacion).HasDefaultValueSql("SYSDATETIME()"); 
 
 
 

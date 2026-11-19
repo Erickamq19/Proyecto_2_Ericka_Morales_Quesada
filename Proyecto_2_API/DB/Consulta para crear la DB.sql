@@ -56,14 +56,25 @@ CREATE TABLE dbo.Proyectos
     FechaInicio DATE NOT NULL,
     FechaFin DATE NULL,
     IdUsuarioCreador INT NOT NULL,
+    IdResponsable INT NOT NULL,
+    IdEstado INT NOT NULL,
     FechaCreacion DATETIME2 NOT NULL
         DEFAULT SYSDATETIME(),
+
     Activo BIT NOT NULL
         DEFAULT 1,
 
     CONSTRAINT FK_Proyectos_Usuarios
         FOREIGN KEY (IdUsuarioCreador)
         REFERENCES dbo.Usuarios(Id),
+
+    CONSTRAINT FK_Proyectos_Responsable
+        FOREIGN KEY (IdResponsable)
+        REFERENCES dbo.Usuarios(Id),
+
+    CONSTRAINT FK_Proyectos_Estados
+        FOREIGN KEY (IdEstado)
+        REFERENCES dbo.Estados(Id),
 
     CONSTRAINT CK_Proyectos_Fechas
         CHECK (FechaFin IS NULL OR FechaFin >= FechaInicio)
