@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Proyecto_2_API.DB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Proyecto_2_API.Controllers
 
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PruebaController : ControllerBase

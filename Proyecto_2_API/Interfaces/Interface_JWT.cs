@@ -7,6 +7,6 @@ namespace Proyecto_2_API.Interfaces
     public interface Interface_JWT
     {
 
-        Task<String>? Inicio_S_Async(Inicio_U usuario);
+        Task<string?> Inicio_S_Async(Inicio_U usuario);
     }
 }

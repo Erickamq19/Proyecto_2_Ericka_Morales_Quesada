@@ -11,9 +11,9 @@ namespace Proyecto_2_API.Modelos
 
         [Required]
         [StringLength(30)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
         [StringLength(150)]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
     }
 }
