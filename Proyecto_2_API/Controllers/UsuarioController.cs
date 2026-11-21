@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Proyecto_2_API.DB;
 using Proyecto_2_API.Modelos;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Identity.Client;
 
 namespace Proyecto_2_API.Controllers
 {
@@ -20,11 +17,6 @@ namespace Proyecto_2_API.Controllers
             _context = context;
         }
 
-        private bool Verif_Rol()
-        {
-            return User.IsInRole("Administrador");
-
-        }
 
         //Uusuario registrados
         [HttpGet]
@@ -44,16 +36,17 @@ namespace Proyecto_2_API.Controllers
         }
 
         //Consultar Proyectos
-        [HttpGet("Consultar/{nombre}")]
-        public async Task<IActionResult> Consultar_U(string nombre)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Consultar_U(int id)
         {
 
-            var usuarios = await _context.Usuarios.Where(u => u.Nombre == nombre).Select(u => new
+            var usuarios = await _context.Usuarios.Where(u => u.Id == id).Select(u => new
             {
                 u.Id,
                 u.Nombre,
                 u.Email,
                 u.IdRol,
+                Rol = u.IdRol == 1? "Administrador" : "Usuario",
                 u.FechaRegistro,
                 u.Activo
             }).FirstOrDefaultAsync();
@@ -127,9 +120,15 @@ namespace Proyecto_2_API.Controllers
                 return NotFound("El usuario no existe");
 
             }
+            bool proyecto_r = await _context.Proyectos.AnyAsync(o => o.IdUsuarioCreador == id || o.IdResponsable == id);
+            bool tarea_r = await _context.Tareas.AnyAsync(o => o.IdUsuarioCreador == id || o.IdUsuarioAsignado == id);
 
-            usuario.Activo = false;
-
+            if (proyecto_r || tarea_r) 
+            {
+                return BadRequest("El usuario tiene proyectos o tareas relacionadas");
+            
+            }
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
 
             return Ok(new {mensaje = "Usuario eliminado correctamente"});

@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Proyecto_2_API.DB;
 using Proyecto_2_API.Modelos;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Identity.Client;
 namespace Proyecto_2_API.Controllers
 {
 
@@ -57,25 +55,44 @@ namespace Proyecto_2_API.Controllers
         }
 
         //Consultar Proyectos
-        [HttpGet("Buscador/{nombre}")]
-        public async Task<IActionResult> Buscador_P(string nombre)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Buscador_P(int id)
         {
-            int idusuario = Obtener_Usuario();
 
-            var consultar = _context.Proyectos.Where(l => l.Activo && l.Nombre.Contains(nombre));
-            if (!Verif_Rol())
+
+            var proyecto = await _context.Proyectos.Where(u => u.Id == id && u.Activo).Select(u => new
             {
-                consultar = consultar.Where(l => l.IdUsuarioCreador == idusuario || l.IdResponsable == idusuario);
+                u.Id,
+                u.Nombre,
+                u.Descripcion,
+                u.FechaInicio,
+                u.FechaFin,
+                u.IdUsuarioCreador, Creador = _context.Usuarios.Where(j => j.Id == u.IdUsuarioCreador).Select(u => u.Nombre).FirstOrDefault(),
+                u.IdResponsable, Responsable = _context.Usuarios.Where(j => j.Id == u.IdResponsable).Select(u => u.Nombre).FirstOrDefault(),
+                u.IdEstado, Estado = _context.Estados.Where(j => j.Id == u.IdEstado).Select(u => u.Nombre).FirstOrDefault(),
+                u.FechaCreacion,
+                u.Activo
+            }).FirstOrDefaultAsync();
 
-            }
-
-            var proyectos = await consultar.ToListAsync();
-            if (proyectos.Count == 0) 
+            
+            if (proyecto == null) 
             {
                 return NotFound("No se encontraron proyectos relacionados");
+               
             }
 
-            return Ok(proyectos);
+            var proyecto_v = await _context.Proyectos.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (!G_Proyectos(proyecto_v!)) 
+            {
+                return Forbid();
+            
+            }
+
+            return Ok(proyecto);
+            
+
+            
         }
 
         //Registrar un nuevo proyecto
@@ -102,6 +119,8 @@ namespace Proyecto_2_API.Controllers
 
             }
 
+            
+
             var nuevo_proyecto = new Proyectos
             {
                 Nombre = proyecto_S.Nombre,
@@ -117,7 +136,15 @@ namespace Proyecto_2_API.Controllers
 
             _context.Proyectos.Add(nuevo_proyecto);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(string.Empty, nuevo_proyecto);
+            return Ok(new { 
+
+                mensaje = "Proyecto registrado",
+                nuevo_proyecto.Id,
+                nuevo_proyecto.Nombre,
+                nuevo_proyecto.IdUsuarioCreador,
+                nuevo_proyecto.IdResponsable,
+                nuevo_proyecto.IdEstado
+            });
 
         }
 
@@ -189,11 +216,15 @@ namespace Proyecto_2_API.Controllers
                 return Forbid();
 
             }
+             bool t_relacionada = await _context.Tareas.AnyAsync(o => o.IdProyecto == id);
+            if (t_relacionada) {
 
-            proyecto.Activo = false;
+                return BadRequest("El proyecto tiene por lo menos una tarea relacionada");
+            }
+            _context.Proyectos.Remove(proyecto);
             await _context.SaveChangesAsync();
 
-            return Ok(proyecto);
+            return Ok(new {mensaje = "Proyecto eliminado"});
 
           
 

@@ -18,7 +18,7 @@ namespace Proyecto_2_API.Modelos
         [Required]
         public int IdUsuarioCreador { get; set; }
         [Required]
-        public int? IdUsuarioAsignado { get; set; }
+        public int IdUsuarioAsignado { get; set; }
         [Required]
         public int IdEstado { get; set; }
         [Required]
